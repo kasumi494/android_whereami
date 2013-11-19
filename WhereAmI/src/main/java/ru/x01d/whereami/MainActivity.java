@@ -32,31 +32,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         myLocationText  = (TextView) findViewById(R.id.myLocationText);
 
-        String context = Context.LOCATION_SERVICE;
-        locationManager = (LocationManager) getSystemService(context);
-
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setCostAllowed(false);
-
-        provider = locationManager.getBestProvider(criteria, false);
-
-        boolean enabled = locationManager.isProviderEnabled(provider);
-
-        if (!enabled)
-        {
-            provider = locationManager.getBestProvider(criteria, true);
-            if (provider == null)
-            {
-                provider = locationManager.getBestProvider(criteria, false);
-                Toast.makeText(this, "Enable location service, please", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        Location location =
-                locationManager.getLastKnownLocation(provider);
-
-        updateWithNewLocation(location);
+        findCurrentLocation();
     }
 
     @Override
@@ -111,6 +87,34 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         Toast.makeText(this, "Disabled provider: " + s, Toast.LENGTH_SHORT).show();
     }
 
+    private void findCurrentLocation()
+    {
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setCostAllowed(false);
+
+        provider = locationManager.getBestProvider(criteria, false);
+
+        boolean enabled = locationManager.isProviderEnabled(provider);
+
+        if (!enabled)
+        {
+            provider = locationManager.getBestProvider(criteria, true);
+            if (provider == null)
+            {
+                provider = locationManager.getBestProvider(criteria, false);
+                Toast.makeText(this, "Enable location service, please", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        Location location = locationManager.getLastKnownLocation(provider);
+        updateWithNewLocation(location);
+
+        locationManager.requestLocationUpdates(provider, ONE_MINUTE, 1, this);
+    }
 
 
     private void updateWithNewLocation(Location location) {
@@ -123,8 +127,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             latLongString = "Lat:" + lat + "\nLong:" + lng;
         } else latLongString = "No location found";
 
-        myLocationText.setText("Your Current Position is:\n" +
-                latLongString);
+        myLocationText.setText("Your Current Position is:\n" + latLongString);
     }
 
 }
