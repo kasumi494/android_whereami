@@ -18,10 +18,20 @@ import android.os.Build;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 public class MainActivity extends ActionBarActivity implements LocationListener {
     private LocationManager locationManager;
     private String provider;
     TextView myLocationText;
+
+    private GoogleMap map;
+    private Marker marker;
 
     private static final int ONE_MINUTE = 1000 * 60;
 
@@ -31,6 +41,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         setContentView(R.layout.fragment_main);
 
         myLocationText  = (TextView) findViewById(R.id.myLocationText);
+        map = ((SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
 
         findCurrentLocation();
     }
@@ -89,7 +101,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     private void findCurrentLocation()
     {
-
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
@@ -113,18 +124,27 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         Location location = locationManager.getLastKnownLocation(provider);
         updateWithNewLocation(location);
 
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
+                location.getLongitude()), 15));
+
         locationManager.requestLocationUpdates(provider, ONE_MINUTE, 1, this);
     }
 
-
     private void updateWithNewLocation(Location location) {
         String latLongString;
+
+        if (marker != null)     marker.remove();
 
         if (location != null)
         {
             double lat = location.getLatitude();
             double lng = location.getLongitude();
             latLongString = "Lat:" + lat + "\nLong:" + lng;
+
+            marker = map.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title("You're here"));
+
         } else latLongString = "No location found";
 
         myLocationText.setText("Your Current Position is:\n" + latLongString);
