@@ -4,5 +4,10 @@
     <string name="app_name">WhereAmI</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="current_position">Your current position is: </string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="you_are_here">You\'re here</string>
+    <string name="no_location">No location found</string>
 
 </resources>

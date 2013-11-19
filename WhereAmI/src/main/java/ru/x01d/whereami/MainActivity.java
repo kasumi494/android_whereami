@@ -120,8 +120,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 Toast.makeText(this, "Enable location service, please", Toast.LENGTH_LONG).show();
             }
         }
+        Toast.makeText(this, "Provider: " + provider, Toast.LENGTH_LONG).show();
 
-        Location location = locationManager.getLastKnownLocation(provider);
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         updateWithNewLocation(location);
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
@@ -131,7 +132,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     private void updateWithNewLocation(Location location) {
-        String latLongString;
+        String latLongString = getString(R.string.no_location);
 
         if (marker != null)     marker.remove();
 
@@ -139,15 +140,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         {
             double lat = location.getLatitude();
             double lng = location.getLongitude();
-            latLongString = "Lat:" + lat + "\nLong:" + lng;
+            latLongString = getString(R.string.latitude) + ": " + lat + "\n"
+                    + getString(R.string.longitude) + ": " + lng;
 
             marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lng))
-                    .title("You're here"));
+                    .title(getString(R.string.you_are_here)));
 
-        } else latLongString = "No location found";
+        }
 
-        myLocationText.setText("Your Current Position is:\n" + latLongString);
+        myLocationText.setText(getString(R.string.current_position) + "\n" + latLongString);
     }
-
 }
