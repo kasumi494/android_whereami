@@ -21,17 +21,19 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity implements LocationListener {
     private LocationManager locationManager;
     private String provider;
-    PlaceholderFragment placeholderFragment;
+    TextView myLocationText;
 
     private static final int ONE_MINUTE = 1000 * 60;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_main);
+
+        myLocationText  = (TextView) findViewById(R.id.myLocationText);
 
         String context = Context.LOCATION_SERVICE;
-        locationManager = (LocationManager)getSystemService(context);
+        locationManager = (LocationManager) getSystemService(context);
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -54,14 +56,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         Location location =
                 locationManager.getLastKnownLocation(provider);
 
-        placeholderFragment = new PlaceholderFragment();
-        placeholderFragment.setLocation(location);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, placeholderFragment)
-                    .commit();
-        }
+        updateWithNewLocation(location);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        placeholderFragment.updateWithNewLocation(location);
+        updateWithNewLocation(location);
     }
 
     @Override
@@ -116,45 +111,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         Toast.makeText(this, "Disabled provider: " + s, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public class PlaceholderFragment extends Fragment {
 
-        View rootView;
-        TextView myLocationText;
-        Location location;
 
-        public PlaceholderFragment() {
-        }
+    private void updateWithNewLocation(Location location) {
+        String latLongString;
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            myLocationText = (TextView) rootView.findViewById(R.id.myLocationText);
+        if (location != null)
+        {
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            latLongString = "Lat:" + lat + "\nLong:" + lng;
+        } else latLongString = "No location found";
 
-            updateWithNewLocation(location);
-            return rootView;
-        }
-
-        private void updateWithNewLocation(Location location) {
-            String latLongString;
-
-            if (location != null)
-            {
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-                latLongString = "Lat:" + lat + "\nLong:" + lng;
-            } else latLongString = "No location found";
-
-            myLocationText.setText("Your Current Position is:\n" +
-                    latLongString);
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
+        myLocationText.setText("Your Current Position is:\n" +
+                latLongString);
     }
 
 }
