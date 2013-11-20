@@ -107,25 +107,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setCostAllowed(false);
 
-        provider = locationManager.getBestProvider(criteria, false);
-
-        boolean enabled = locationManager.isProviderEnabled(provider);
-
-        if (!enabled)
+        provider = locationManager.getBestProvider(criteria, true);
+        if (provider == null)
         {
-            provider = locationManager.getBestProvider(criteria, true);
-            if (provider == null)
-            {
-                provider = locationManager.getBestProvider(criteria, false);
-                Toast.makeText(this, getString(R.string.provider_on), Toast.LENGTH_LONG).show();
-            }
+            provider = locationManager.getBestProvider(criteria, false);
+            Toast.makeText(this, getString(R.string.provider_on), Toast.LENGTH_LONG).show();
         }
+
         Toast.makeText(this, getString(R.string.provider) + provider, Toast.LENGTH_LONG).show();
 
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         updateWithNewLocation(location);
 
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
+        if (location != null)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
                 location.getLongitude()), 15));
 
         locationManager.requestLocationUpdates(provider, ONE_MINUTE, 1, this);
