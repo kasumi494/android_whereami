@@ -91,12 +91,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     @Override
     public void onProviderEnabled(String s) {
-        Toast.makeText(this, "Enabled provider: " + s, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.provider_enabled) + s, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        Toast.makeText(this, "Disabled provider: " + s, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.provider_disabled) + s, Toast.LENGTH_SHORT).show();
     }
 
     private void findCurrentLocation()
@@ -117,10 +117,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             if (provider == null)
             {
                 provider = locationManager.getBestProvider(criteria, false);
-                Toast.makeText(this, "Enable location service, please", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.provider_on), Toast.LENGTH_LONG).show();
             }
         }
-        Toast.makeText(this, "Provider: " + provider, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.provider) + provider, Toast.LENGTH_LONG).show();
 
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         updateWithNewLocation(location);

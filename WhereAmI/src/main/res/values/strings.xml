@@ -9,5 +9,9 @@
     <string name="longitude">Longitude</string>
     <string name="you_are_here">You\'re here</string>
     <string name="no_location">No location found</string>
+    <string name="provider_enabled">Enabled provider: </string>
+    <string name="provider_disabled">Disabled provider: </string>
+    <string name="provider_on">Enable location service, please</string>
+    <string name="provider">Provider: </string>
 
 </resources>
